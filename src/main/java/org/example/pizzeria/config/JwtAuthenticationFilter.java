@@ -38,16 +38,29 @@ public class JwtAuthenticationFilter implements Filter {
         String authHeader = httpRequest.getHeader(HttpHeaders.AUTHORIZATION);
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             String token = authHeader.substring(7);
-            if (jwtUtil.isTokenValid(token)) {
-                String email = jwtUtil.extractUsername(token);
-                User user = userRepository.findByEmail(email).orElse(null);
-                if (user != null) {
-                    UsernamePasswordAuthenticationToken authentication =
-                            new UsernamePasswordAuthenticationToken(
-                                    user.getEmail(), null, user.getAuthorities());
-                    authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpRequest));
-                    SecurityContextHolder.getContext().setAuthentication(authentication);
+            try {
+                if (jwtUtil.isTokenValid(token)) {
+                    String email = jwtUtil.extractUsername(token);
+                    User user = userRepository.findByEmail(email).orElse(null);
+                    if (user != null) {
+                        UsernamePasswordAuthenticationToken authentication =
+                                new UsernamePasswordAuthenticationToken(
+                                        user.getEmail(), null, user.getAuthorities());
+                        authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpRequest));
+                        SecurityContextHolder.getContext().setAuthentication(authentication);
+                    }
+                } else {
+                    // Токен не валідний чи прострочений
+                    httpResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    httpResponse.setContentType("application/json");
+                    httpResponse.getWriter().write("{\"error\":\"Token expired or invalid\"}");
+                    return;
                 }
+            } catch (io.jsonwebtoken.ExpiredJwtException ex) {
+                httpResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                httpResponse.setContentType("application/json");
+                httpResponse.getWriter().write("{\"error\":\"Token expired\"}");
+                return;
             }
         }
 

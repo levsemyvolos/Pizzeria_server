@@ -16,7 +16,7 @@ public class JwtUtil {
                 .setSubject(email)
                 .claim("role", role)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60)) // 1 hour expiration
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 3)) // 3 hour expiration
                 .signWith(SignatureAlgorithm.HS256, SECRET_KEY.getBytes())
                 .compact();
     }
@@ -37,7 +37,11 @@ public class JwtUtil {
     }
 
     public boolean isTokenValid(String token) {
-        Date expiration = extractClaims(token).getExpiration();
-        return expiration.after(new Date());
+        try {
+            Claims claims = extractClaims(token);
+            return claims.getExpiration().after(new Date());
+        } catch (io.jsonwebtoken.ExpiredJwtException e) {
+            return false;
+        }
     }
 }

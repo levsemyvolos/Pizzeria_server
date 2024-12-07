@@ -1,8 +1,11 @@
 package org.example.pizzeria.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -16,16 +19,19 @@ public class Order {
     private Long id;
 
     private Date orderDate;
-    private String status; // NEW, IN_PROGRESS, DELIVERED, CANCELLED
+    private String status; // "NEW","IN_PROGRESS","DELIVERED","CANCELLED"
     private String customerName;
     private String customerPhone;
     private String deliveryAddress;
     private double totalPrice;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="user_id")
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private User user;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
-    private List<OrderItem> items;
+    @JsonManagedReference
+    private List<OrderItem> items = new ArrayList<>();
 }

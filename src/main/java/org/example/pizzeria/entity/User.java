@@ -1,6 +1,5 @@
 package org.example.pizzeria.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -24,8 +23,9 @@ public class User {
     private String address;
     private String role; // "CUSTOMER" or "ADMIN"
 
-    @OneToMany(mappedBy = "user")
-    @JsonIgnore
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private List<Order> orders;
 
     public User(Long id, String email, String passwordHash, String name, String phone, String address, String role) {

@@ -17,12 +17,11 @@ public class Pizza {
     @Column(length=2000)
     private String description;
     private double basePrice;
-    private String imageUrl; // For simplicity
-
-    // For availableSizes and doughTypes, we could store as JSON or separate tables
-    @ElementCollection
-    private List<String> availableSizes = new ArrayList<>();
+    private String imageUrl;
 
     @ElementCollection
-    private List<String> doughTypes = new ArrayList<>();
+    private List<String> availableSizes;
+
+    @ElementCollection
+    private List<String> doughTypes;
 }

@@ -14,6 +14,10 @@ public class AuthService {
     private UserRepository userRepository;
 
     public User registerUser(RegisterRequest req) {
+        if (userRepository.findByEmail(req.getEmail()).isPresent()) {
+            throw new RuntimeException("Email already in use");
+        }
+
         User user = new User();
         user.setEmail(req.getEmail());
         user.setPasswordHash(BCrypt.hashpw(req.getPassword(), BCrypt.gensalt()));
