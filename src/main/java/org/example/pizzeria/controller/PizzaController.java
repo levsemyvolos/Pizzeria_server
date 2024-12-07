@@ -1,36 +1,49 @@
 package org.example.pizzeria.controller;
 
-import org.example.pizzeria.entity.Pizza;
-import org.example.pizzeria.repository.PizzaRepository;
+import org.example.pizzeria.dto.PizzaResponse;
+import org.example.pizzeria.dto.PizzaRequest;
+import org.example.pizzeria.service.PizzaService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/pizzas")
 public class PizzaController {
 
     @Autowired
-    private PizzaRepository pizzaRepository;
+    private PizzaService pizzaService;
 
     @GetMapping
-    public List<Pizza> getAllPizzas(
+    public Page<PizzaResponse> getAllPizzas(
             @RequestParam(required=false) String search,
             @RequestParam(required=false) String size,
-            @RequestParam(required=false) String dough
+            @RequestParam(required=false) String dough,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int sizePage,
+            @RequestParam(defaultValue = "name") String sortBy,
+            @RequestParam(defaultValue = "asc") String sortDir
     ) {
-        if (search != null) {
-            search = search.toLowerCase();
-        }
-        return pizzaRepository.filterPizzas(search, size, dough);
+        return pizzaService.getAllPizzas(search, size, dough, page, sizePage, sortBy, sortDir);
     }
 
     @GetMapping("/{id}")
-    public Pizza getPizzaById(@PathVariable Long id) {
-        return pizzaRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Pizza not found"));
+    public PizzaResponse getPizzaById(@PathVariable Long id) {
+        return pizzaService.getPizzaById(id);
+    }
+
+    @PostMapping
+    public PizzaResponse createPizza(@RequestBody PizzaRequest pizzaRequest) {
+        return pizzaService.createPizza(pizzaRequest);
+    }
+
+    @PutMapping("/{id}")
+    public PizzaResponse updatePizza(@PathVariable Long id, @RequestBody PizzaRequest pizzaRequest) {
+        return pizzaService.updatePizza(id, pizzaRequest);
+    }
+
+    @DeleteMapping("/{id}")
+    public void deletePizza(@PathVariable Long id) {
+        pizzaService.deletePizza(id);
     }
 }

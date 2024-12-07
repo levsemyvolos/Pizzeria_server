@@ -19,7 +19,6 @@ public class OrderService {
     @Autowired private OrderRepository orderRepository;
     @Autowired private OrderItemRepository orderItemRepository;
     @Autowired private PizzaRepository pizzaRepository;
-    @Autowired private UserRepository userRepository;
 
     public OrderResponse createOrder(CreateOrderRequest req, User user) {
         Order order = new Order();
