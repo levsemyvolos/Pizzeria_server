@@ -12,8 +12,6 @@ A comprehensive RESTful API backend for managing an online pizza ordering system
 - [API Documentation](#api-documentation)
 - [Database Schema](#database-schema)
 - [Security](#security)
-- [Testing](#testing)
-- [Contributing](#contributing)
 
 ## 🎯 Overview
 
@@ -424,40 +422,6 @@ CREATE TABLE orders (
 - **Input validation and sanitization**
 - **SQL injection prevention** through JPA
 - **CORS configuration** for frontend integration
-
-## 🧪 Testing
-
-### Running Tests
-
-```bash
-# Run all tests
-mvn test
-
-# Run tests with coverage
-mvn test jacoco:report
-```
-
-### Test Structure
-
-- **Unit Tests**: Service layer business logic
-- **Integration Tests**: Controller endpoints
-- **Repository Tests**: Database operations
-- **Security Tests**: Authentication and authorization
-
-## 🤝 Contributing
-
-1. **Fork the repository**
-2. **Create a feature branch** (`git checkout -b feature/amazing-feature`)
-3. **Commit your changes** (`git commit -m 'Add some amazing feature'`)
-4. **Push to the branch** (`git push origin feature/amazing-feature`)
-5. **Open a Pull Request**
-
-### Code Style
-
-- Follow Java naming conventions
-- Use meaningful variable and method names
-- Add appropriate comments for complex logic
-- Ensure all tests pass before submitting
 
 ## 📊 Project Status
 
